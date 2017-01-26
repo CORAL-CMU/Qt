@@ -266,7 +266,4 @@ void MainWindow::slotMessageNotSent()
 void MainWindow::slotMessageReceived(QByteArray message)
 {
     ui->messageshow->append(message.toHex());
-    ui->messageshow->append(QString("Out: %1, In: %2")
-                            .arg(venus8.baudRate(QSerialPort::Output))
-                            .arg(venus8.baudRate(QSerialPort::Input)));
 }

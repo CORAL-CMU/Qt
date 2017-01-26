@@ -40,14 +40,6 @@ Q_SIGNALS:
 protected Q_SLOTS:
     void slotLoadPortList();
 
-//public:
-//    void initVenus8(int portId);
-//Q_SIGNALS:
-//    void signalInitializeVenus8(int portId);
-//    void signalVenus8Initialized();
-//protected Q_SLOTS:
-//    void slotInitializeVenus8(int portId);
-
 public:
     void startReceiveNmea(int portId);
     void stopReceiveNmea();

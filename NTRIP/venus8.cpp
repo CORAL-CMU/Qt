@@ -13,7 +13,6 @@ Venus8::Venus8()
     thread=new QThread();
     this->moveToThread(thread);
     connect(this,SIGNAL(signalLoadPortList()),this,SLOT(slotLoadPortList()),Qt::QueuedConnection);
-//    connect(this,SIGNAL(signalInitializeVenus8(int)),this,SLOT(slotInitializeVenus8(int)),Qt::QueuedConnection);
     connect(this,SIGNAL(signalStartVenus8(int)),this,SLOT(slotStartVenus8(int)),Qt::QueuedConnection);
     thread->start();
 
@@ -49,51 +48,6 @@ void Venus8::slotLoadPortList()
     portlist=QSerialPortInfo::availablePorts();
     emit signalPortListLoaded();
 }
-
-//void Venus8::initVenus8(int portId)
-//{
-//    QRegExp rx("(\\d+)");
-//    int pos=rx.indexIn(portlist[portId].portName(),0);
-//    if(pos>=0)
-//    {
-//        int port=rx.cap(1).toInt()-1;
-//        QString hexmessage=QString("%1%2%3%4")
-//                .arg("05")
-//                .arg(port,2,16,QChar('0'))
-//                .arg(maxvenus8baudrateid,2,16,QChar('0'))
-//                .arg("00");
-//        sendMessage(hexmessage.toUtf8());
-//        emit signalInitializeVenus8(portId);
-//    }
-//}
-
-//void Venus8::slotInitializeVenus8(int portId)
-//{
-//    this->setPort(portlist[portId]);
-//    baudrate=defaultbaudrate;
-//    this->setBaudRate(baudrate);
-//    if(this->open(QIODevice::WriteOnly))
-//    {
-//        if(checkSendFlag())
-//        {
-//            this->write(message);
-//            if(this->waitForBytesWritten(VENUS8WAIT))
-//            {
-//                emit signalMessageSent();
-//            }
-//            else
-//            {
-//                emit signalMessageNotSent();
-//            }
-//            mutex.lock();
-//            sendflag=false;
-//            mutex.unlock();
-//        }
-//        this->close();
-//        baudrate=maxbaudrate;
-//        emit signalVenus8Initialized();
-//    }
-//}
 
 void Venus8::startReceiveNmea(int portId)
 {
