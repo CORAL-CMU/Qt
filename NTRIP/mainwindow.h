@@ -27,6 +27,7 @@ private slots:
     void on_loadports_clicked();
     void on_startvenus8_clicked();
     void on_clearnmea_clicked();
+    void on_sendmessage_clicked();
 private:
     Ui::MainWindow *ui;
     Ntrip ntrip;
@@ -41,6 +42,10 @@ public Q_SLOTS:
     void slotNmeaParsed(nmeaINFO info);
     void slotVenus8Stopped();
     void slotVenus8ConnectionError();
+public Q_SLOTS:
+    void slotMessageSent();
+    void slotMessageNotSent();
+    void slotMessageReceived(QByteArray message);
 };
 
 #endif // MAINWINDOW_H

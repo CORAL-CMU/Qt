@@ -12,20 +12,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&ntrip,SIGNAL(signalRtkReceived(QByteArray)),this,SLOT(slotRtkReceived(QByteArray)));
     connect(&ntrip,SIGNAL(signalRtkEnd()),this,SLOT(slotRtkEnd()));
 
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud1200)));
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud2400)));
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud4800)));
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud9600)));
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud19200)));
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud38400)));
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud57600)));
-    ui->baudrate->addItem(QString::number(int(QSerialPort::Baud115200)));
-
     connect(&venus8,SIGNAL(signalPortListLoaded()),this,SLOT(slotPortListLoaded()));
     connect(&venus8,SIGNAL(signalNmeaReceived(QByteArray)),this,SLOT(slotNmeaReceived(QByteArray)));
     connect(&venus8,SIGNAL(signalNmeaParsed(nmeaINFO)),this,SLOT(slotNmeaParsed(nmeaINFO)));
     connect(&venus8,SIGNAL(signalVenus8Stopped()),this,SLOT(slotVenus8Stopped()));
     connect(&venus8,SIGNAL(signalVenus8ConnectionError()),this,SLOT(slotVenus8ConnectionError()));
+
+    connect(&venus8,SIGNAL(signalMessageSent()),this,SLOT(slotMessageSent()));
+    connect(&venus8,SIGNAL(signalMessageNotSent()),this,SLOT(slotMessageNotSent()));
+    connect(&venus8,SIGNAL(signalMessageReceived(QByteArray)),this,SLOT(slotMessageReceived(QByteArray)));
 }
 
 MainWindow::~MainWindow()
@@ -96,6 +91,7 @@ void MainWindow::on_startvenus8_clicked()
 {
     if(ui->startvenus8->text()==QString("Start Venus8"))
     {
+        venus8.baudrate=QSerialPort::BaudRate(ui->baudrate->text().toInt());
         int portid=ui->portlist->currentRow();
         if(portid>=0)
         {
@@ -113,6 +109,12 @@ void MainWindow::on_startvenus8_clicked()
 void MainWindow::on_clearnmea_clicked()
 {
     ui->nmea->clear();
+}
+
+void MainWindow::on_sendmessage_clicked()
+{
+    QByteArray hexMessage=ui->message->text().toUtf8();
+    venus8.sendMessage(hexMessage);
 }
 
 void MainWindow::slotCasterListLoaded()
@@ -249,4 +251,22 @@ void MainWindow::slotVenus8ConnectionError()
 {
     ui->nmea->append("Venus8 Connection Error!");
     ui->startvenus8->setText("Start Venus8");
+}
+
+void MainWindow::slotMessageSent()
+{
+    ui->messageshow->append("Venus8 Message Sent");
+}
+
+void MainWindow::slotMessageNotSent()
+{
+    ui->messageshow->append("Venus8 Message Not Sent");
+}
+
+void MainWindow::slotMessageReceived(QByteArray message)
+{
+    ui->messageshow->append(message.toHex());
+    ui->messageshow->append(QString("Out: %1, In: %2")
+                            .arg(venus8.baudRate(QSerialPort::Output))
+                            .arg(venus8.baudRate(QSerialPort::Input)));
 }
