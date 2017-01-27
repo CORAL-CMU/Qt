@@ -15,11 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     ntrip.cpp \
-    venus8.cpp
+    venus8.cpp \
+    rtcm.cpp
 
 HEADERS  += mainwindow.h \
     ntrip.h \
-    venus8.h
+    venus8.h \
+    rtcm.h \
+    rtklib.h
 
 FORMS    += mainwindow.ui
 
