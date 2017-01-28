@@ -5,8 +5,10 @@
 #include <QString>
 #include <QThread>
 #include <QMutex>
+#include <QList>
+#include <QByteArray>
 
-#include "rtklib.h"
+//#include "rtklib.h"
 
 class Rtcm : public QObject
 {
@@ -21,7 +23,7 @@ protected:
 public Q_SLOTS:
     void slotDecodeRtcm(QByteArray rtcm);
 Q_SIGNALS:
-    void signalRtcmDecoded(rtcm_t rtcm);
+    //void signalRtcmDecoded(rtcm_t rtcm);
 };
 
 #endif // RTCM_H

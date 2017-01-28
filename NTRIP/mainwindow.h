@@ -5,6 +5,7 @@
 #include <QTime>
 #include "ntrip.h"
 #include "venus8.h"
+#include "rtcm.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +33,7 @@ private:
     Ui::MainWindow *ui;
     Ntrip ntrip;
     Venus8 venus8;
+    Rtcm rtcm;
 public Q_SLOTS:
     void slotCasterListLoaded();
     void slotRtkReceived(QByteArray rtk);

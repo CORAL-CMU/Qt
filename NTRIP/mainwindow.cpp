@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&ntrip,SIGNAL(signalCasterListLoaded()),this,SLOT(slotCasterListLoaded()));
     connect(&ntrip,SIGNAL(signalRtkReceived(QByteArray)),this,SLOT(slotRtkReceived(QByteArray)));
     connect(&ntrip,SIGNAL(signalRtkEnd()),this,SLOT(slotRtkEnd()));
+    connect(&ntrip,SIGNAL(signalRtkReceived(QByteArray)),&rtcm,SLOT(slotDecodeRtcm(QByteArray)));
 
     connect(&venus8,SIGNAL(signalPortListLoaded()),this,SLOT(slotPortListLoaded()));
     connect(&venus8,SIGNAL(signalNmeaReceived(QByteArray)),this,SLOT(slotNmeaReceived(QByteArray)));
