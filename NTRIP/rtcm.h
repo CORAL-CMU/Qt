@@ -7,6 +7,7 @@
 #include <QMutex>
 #include <QList>
 #include <QByteArray>
+#include <QtEndian>
 
 //#include "rtklib.h"
 

@@ -31,8 +31,12 @@ void Rtcm::slotDecodeRtcm(QByteArray rtcm)
     while(data.startsWith(char(0xD3)))
     {
         qint16 len=0;
-        len|=(qint16(data.at(1)))<<8;
-        len|=(qint16(data.at(2)));
+        //        len|=(qint16(data.at(1)))<<8;
+        //        len|=(qint16(data.at(2)));
+        //const qint8 * src=(const qint8*)(data.data()+1);
+        //len=qFromBigEndian();
+        memcpy(&len,data.data()+1,2);
+        len=qFromBigEndian(len);
         QByteArray message=data.mid(3,len);
         messages.push_back(message);
         data=data.mid(3+len+3);
