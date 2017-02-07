@@ -7,6 +7,9 @@
 #include <QMutex>
 #include <QThread>
 #include <QRegExp>
+#include <QFile>
+#include <QTextStream>
+#include <QFileDialog>
 
 #include <nmea.h>
 
@@ -58,6 +61,44 @@ protected:
     bool checkSendFlag();
 protected Q_SLOTS:
     void slotStartVenus8(int portId);
+};
+
+class Venus8Logger : public QObject
+{
+    Q_OBJECT
+public:
+    explicit Venus8Logger();
+    ~ Venus8Logger();
+
+public:
+    QString filename;
+
+protected:
+    QMutex mutex;
+    bool receiveflag;
+    QThread * thread;
+    QFile file;
+    QTextStream stream;
+
+public:
+    void setLogFilename();
+Q_SIGNALS:
+    void signalSetLogFilename(QString filename);
+    void signalLogFilenameSet();
+protected Q_SLOTS:
+    void slotSetLogFilename(QString filename);
+
+public:
+    void startLogNmea();
+    void stopLogNmea();
+Q_SIGNALS:
+    void signalStartLogNmea();
+    void signalNmeaLogged();
+    void signalNmeaLogStopped();
+protected:
+    bool checkFileOpenFlagAndWriteData(QByteArray nmea);
+public Q_SLOTS:
+    void slotLogNmea(QByteArray nmea);
 };
 
 #endif // VENUS8_H

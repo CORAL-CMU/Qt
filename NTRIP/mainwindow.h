@@ -29,10 +29,15 @@ private slots:
     void on_startvenus8_clicked();
     void on_clearnmea_clicked();
     void on_sendmessage_clicked();
+    void on_setlogfile_clicked();
+
+    void on_startlog_clicked();
+
 private:
     Ui::MainWindow *ui;
     Ntrip ntrip;
     Venus8 venus8;
+    Venus8Logger logger;
     Rtcm rtcm;
 public Q_SLOTS:
     void slotCasterListLoaded();
@@ -48,6 +53,8 @@ public Q_SLOTS:
     void slotMessageSent();
     void slotMessageNotSent();
     void slotMessageReceived(QByteArray message);
+public Q_SLOTS:
+    void slotLogFilenameSet();
 };
 
 #endif // MAINWINDOW_H

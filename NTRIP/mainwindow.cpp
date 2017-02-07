@@ -19,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&venus8,SIGNAL(signalVenus8Stopped()),this,SLOT(slotVenus8Stopped()));
     connect(&venus8,SIGNAL(signalVenus8ConnectionError()),this,SLOT(slotVenus8ConnectionError()));
 
+    connect(&logger,SIGNAL(signalLogFilenameSet()),this,SLOT(slotLogFilenameSet()));
+    connect(&venus8,SIGNAL(signalNmeaReceived(QByteArray)),&logger,SLOT(slotLogNmea(QByteArray)));
+
     connect(&venus8,SIGNAL(signalMessageSent()),this,SLOT(slotMessageSent()));
     connect(&venus8,SIGNAL(signalMessageNotSent()),this,SLOT(slotMessageNotSent()));
     connect(&venus8,SIGNAL(signalMessageReceived(QByteArray)),this,SLOT(slotMessageReceived(QByteArray)));
@@ -267,4 +270,28 @@ void MainWindow::slotMessageNotSent()
 void MainWindow::slotMessageReceived(QByteArray message)
 {
     ui->messageshow->append(message.toHex());
+}
+
+void MainWindow::slotLogFilenameSet()
+{
+    ui->logfile->setText(logger.filename);
+}
+
+void MainWindow::on_setlogfile_clicked()
+{
+    logger.setLogFilename();
+}
+
+void MainWindow::on_startlog_clicked()
+{
+    if(ui->startlog->text()==QString("Start"))
+    {
+        ui->startlog->setText("Stop");
+        logger.startLogNmea();
+    }
+    else
+    {
+        ui->startlog->setText("Start");
+        logger.stopLogNmea();
+    }
 }

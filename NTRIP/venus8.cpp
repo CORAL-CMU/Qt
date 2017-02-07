@@ -162,6 +162,96 @@ void Venus8::slotStartVenus8(int portId)
     }
 }
 
+Venus8Logger::Venus8Logger()
+    : QObject(Q_NULLPTR)
+{
+    stream.setDevice(&file);
+    thread=new QThread();
+    this->moveToThread(thread);
+    connect(this,SIGNAL(signalSetLogFilename(QString)),this,SLOT(slotSetLogFilename(QString)),Qt::QueuedConnection);
+    thread->start(QThread::HighestPriority);
+}
 
+Venus8Logger::~Venus8Logger()
+{
+    if(file.isOpen())
+    {
+        mutex.lock();
+        file.close();
+        mutex.unlock();
+    }
+    thread->exit();
+    thread->wait();
+    delete thread;
+}
 
+void Venus8Logger::setLogFilename()
+{
+    QString filename=QFileDialog::getSaveFileName();
+    if(filename.isEmpty())
+    {
+        return;
+    }
+    emit signalSetLogFilename(filename);
+}
 
+void Venus8Logger::slotSetLogFilename(QString filename)
+{
+    mutex.lock();
+    this->filename=filename;
+    if(file.fileName()!=this->filename)
+    {
+        if(file.isOpen())
+        {
+            file.close();
+        }
+        file.setFileName(this->filename);
+        emit signalLogFilenameSet();
+    }
+    mutex.unlock();
+}
+
+void Venus8Logger::startLogNmea()
+{
+    mutex.lock();
+    if(!this->filename.isEmpty()&&!file.isOpen())
+    {
+        file.open(QIODevice::WriteOnly|QIODevice::Text);
+    }
+    mutex.unlock();
+}
+
+void Venus8Logger::stopLogNmea()
+{
+    mutex.lock();
+    if(file.isOpen())
+    {
+        file.close();
+    }
+    mutex.unlock();
+}
+
+bool Venus8Logger::checkFileOpenFlagAndWriteData(QByteArray nmea)
+{
+    bool result;
+    mutex.lock();
+    result=file.isOpen();
+    if(result)
+    {
+        stream<<nmea;
+    }
+    mutex.unlock();
+    return result;
+}
+
+void Venus8Logger::slotLogNmea(QByteArray nmea)
+{
+    if(checkFileOpenFlagAndWriteData(nmea))
+    {
+        emit signalNmeaLogged();
+    }
+    else
+    {
+        emit signalNmeaLogStopped();
+    }
+}
