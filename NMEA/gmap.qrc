@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/html">
+        <file>qgmapinterface_embedded.html</file>
+    </qresource>
+    <qresource prefix="/JS">
+        <file>qgmapinterface.js</file>
+    </qresource>
+</RCC>

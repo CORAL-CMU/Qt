@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #floating-panel{
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 1px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 10px;
+        padding-left: 1px;
+        padding-right: 1px;
+      }
+      #clientid{
+        width: 200px;
+        margin: 1px;
+      }
+      #address{
+        width: 120px;
+        margin: 1px;
+      }
+      #port{
+        width: 60px;
+        margin: 1px;
+      }
+      #connect{
+        width: 100px;
+        margin: 1px;
+      }
+      #owner{
+        width: 200px;
+        margin: 1px;
+      }
+      #occupy{
+        width: 100px;
+        margin: 1px;
+      }
+      #map_canvas { height: 100% }
+    </style>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD8FR1WFYIl2d0RiJf5eiXd-bW9R9hBH14&sensor=false"></script>
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="qrc:///JS/qgmapinterface.js"></script>
+
+  </head>
+  <body>
+    <div id="floating-panel">
+        <input id="clientid" placeholder="Client ID" value="HMW-Alexander"/>
+        <input id="address" placeholder="Server IP" value="128.237.153.76"/>
+        <input id="port" placeholder="Server Port" value="12345"/>
+        <input type="submit" id="connect" value="Connect" onclick="connectWebSocket(this);"/>
+        <input id="owner" readOnly=true/>
+        <input type="submit" id="occupy" value="Occupy" onclick="occupyEditor(this);" disabled=true/>
+    </div>
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+</html>
