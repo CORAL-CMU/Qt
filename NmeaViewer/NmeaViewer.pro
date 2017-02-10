@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network websockets webchannel webenginewidgets positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,3 +18,20 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+win32{
+    INCLUDEPATH += C:\SDK\Lib\Static\QGMapInterface
+    INCLUDEPATH += C:\SDK\Lib\Static\QJSInterface
+    INCLUDEPATH += C:\SDK\Lib\Static\NmeaLib
+
+    CONFIG(debug,debug|release){
+        LIBS += C:\SDK\Lib\Static\QGMapInterface\QGMapInterface_Debug.lib
+        LIBS += C:\SDK\Lib\Static\QJSInterface\QJSInterface_Debug.lib
+        LIBS += C:\SDK\Lib\Static\NmeaLib\NmeaLib_Debug.lib
+    }else{
+        LIBS += C:\SDK\Lib\Static\QGMapInterface\QGMapInterface_Release.lib
+        LIBS += C:\SDK\Lib\Static\QJSInterface\QJSInterface_Release.lib
+        LIBS += C:\SDK\Lib\Static\NmeaLib\NmeaLib_Release.lib
+    }
+}
+

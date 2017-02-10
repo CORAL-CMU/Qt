@@ -97,8 +97,9 @@ void MainWindow::slotPositionUpdated(const QGeoPositionInfo &update)
         markers.push_back(marker);
         polyline.vertices.push_back(QGMapPointF(update.coordinate().latitude(),update.coordinate().longitude()));
         stream<<update.timestamp().toString("yyyy-MM-dd_HH:mm:ss:zzz")<<"\t"
-             <<update.coordinate().latitude()<<"\t"
-             <<update.coordinate().longitude()<<"\n";
+             <<QString::number(update.coordinate().latitude(),'f',15)<<"\t"
+             <<QString::number(update.coordinate().longitude(),'f',15)<<"\t"
+             <<QString::number(update.coordinate().altitude(),'f',15)<<"\n";
     }
 }
 

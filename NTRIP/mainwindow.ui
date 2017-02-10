@@ -111,7 +111,7 @@
           <item>
            <widget class="QLineEdit" name="pwd">
             <property name="text">
-             <string>CMU</string>
+             <string>PLI13</string>
             </property>
            </widget>
           </item>
