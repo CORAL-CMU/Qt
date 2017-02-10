@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network serialport
+QT       += core gui network serialport network websockets webchannel webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,8 +21,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     ntrip.h \
     venus8.h \
-    rtcm.h \
-    rtklib.h
+    rtcm.h
 
 FORMS    += mainwindow.ui
 
@@ -34,9 +33,15 @@ CONFIG(debug,debug|release){
     target.path = ../app/$$TARGET/debug
     INSTALLS += target
 
-    INCLUDEPATH += ../lib/NmeaLib/include
-    win32:LIBS += ../lib/NmeaLib/debug/NmeaLib.lib
-    unix:LIBS += -L../lib/NmeaLib/debug -lNmeaLib
+    win32:INCLUDEPATH += C:/SDK/Lib/Static/NmeaLib
+    win32:LIBS += C:/SDK/Lib/Static/NmeaLib/NmeaLib_Debug.lib
+    unix:INCLUDEPATH += $$(HOME)/SDK/Lib/Static/NmeaLib
+    unix:LIBS += -L$$(HOME)/SDK/Lib/Static/NmeaLib -lNmeaLib_Debug
+
+    win32:INCLUDEPATH += C:/SDK/Lib/Static/QGMapInterface
+    win32:INCLUDEPATH += C:/SDK/Lib/Static/QJSInterface
+    win32:LIBS += C:/SDK/Lib/Static/QGMapInterface/QGMapInterface_Debug.lib
+    win32:LIBS += C:/SDK/Lib/Static/QJSInterface/QJSInterface_Debug.lib
 }else{
     DESTDIR = ../build/$$TARGET/release
     MOC_DIR = ../build/$$TARGET/release
@@ -45,9 +50,15 @@ CONFIG(debug,debug|release){
     target.path = ../app/$$TARGET/release
     INSTALLS += target
 
-    INCLUDEPATH += ../lib/NmeaLib/include
-    win32:LIBS += ../lib/NmeaLib/release/NmeaLib.lib
-    unix:LIBS += -L../lib/NmeaLib/release -lNmeaLib
+    win32:INCLUDEPATH += C:/SDK/Lib/Static/NmeaLib
+    win32:LIBS += C:/SDK/Lib/Static/NmeaLib/NmeaLib_Release.lib
+    unix:INCLUDEPATH += $$(HOME)/SDK/Lib/Static/NmeaLib
+    unix:LIBS += -L$$(HOME)/SDK/Lib/Static/NmeaLib -lNmeaLib_Release
+
+    win32:INCLUDEPATH += C:/SDK/Lib/Static/QGMapInterface
+    win32:INCLUDEPATH += C:/SDK/Lib/Static/QJSInterface
+    win32:LIBS += C:/SDK/Lib/Static/QGMapInterface/QGMapInterface_Release.lib
+    win32:LIBS += C:/SDK/Lib/Static/QJSInterface/QJSInterface_Release.lib
 }
 
 

@@ -35,25 +35,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-double convertNDEGToDegree(double ndeg)
-{
-    bool flag=ndeg<0;
-    if(flag)
-    {
-        ndeg=-ndeg;
-    }
-    int degmin=int(ndeg);
-    double sec=(ndeg-degmin)*60.0;
-    int min=degmin%100;
-    int deg=degmin/100;
-    double result=deg+min/60.0+sec/3600.0;
-    if(flag)
-    {
-        result=-result;
-    }
-    return result;
-}
-
 void MainWindow::on_open_clicked()
 {
     QString filename=QFileDialog::getOpenFileName(this,"Open NMEA File",QString(),QString("NMEA (*.nmea);;LatLng (*.txt)"));
@@ -114,8 +95,5 @@ void MainWindow::on_open_clicked()
 
 void MainWindow::slotClientIdConfirmed(QString clientId)
 {
-    for(int i=0;i<polylines.size();i++)
-    {
-        interface->setPolyline(polylines,polylineconfigs,clientId);
-    }
+    interface->setPolyline(polylines,polylineconfigs,clientId);
 }

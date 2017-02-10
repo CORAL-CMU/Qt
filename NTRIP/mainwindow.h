@@ -6,6 +6,8 @@
 #include "ntrip.h"
 #include "venus8.h"
 #include "rtcm.h"
+#include <qgmapinterface.h>
+#include <QNetworkInterface>
 
 namespace Ui {
 class MainWindow;
@@ -39,6 +41,9 @@ private:
     Venus8 venus8;
     Venus8Logger logger;
     Rtcm rtcm;
+    QGMapInterface * interface;
+    QGMapPolyline polyline;
+    QGMapPolylineConfig polylineconfig;
 public Q_SLOTS:
     void slotCasterListLoaded();
     void slotRtkReceived(QByteArray rtk);
@@ -55,6 +60,13 @@ public Q_SLOTS:
     void slotMessageReceived(QByteArray message);
 public Q_SLOTS:
     void slotLogFilenameSet();
+public Q_SLOTS:
+    void slotRtcmGpsData(RtcmGPSData gpsData);
+    void slotRtcmStationaryAntennaData(RtcmStationaryAntennaData stationaryAntennaData);
+    void slotRtcmAntennaDescriptor(RtcmAntennaDescriptor antennaDescriptor);
+    void slotRtcmReceiverAntennaDescriptor(RtcmReceiverAntennaDescriptor receiverAntennaDescriptor);
+public Q_SLOTS:
+    void slotClientIdConfirmed(QString clientId);
 };
 
 #endif // MAINWINDOW_H

@@ -25,6 +25,32 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&venus8,SIGNAL(signalMessageSent()),this,SLOT(slotMessageSent()));
     connect(&venus8,SIGNAL(signalMessageNotSent()),this,SLOT(slotMessageNotSent()));
     connect(&venus8,SIGNAL(signalMessageReceived(QByteArray)),this,SLOT(slotMessageReceived(QByteArray)));
+
+    connect(&rtcm,SIGNAL(signalRtcmGpsData(RtcmGPSData)),this,SLOT(slotRtcmGpsData(RtcmGPSData)));
+    connect(&rtcm,SIGNAL(signalRtcmStationaryAntennaData(RtcmStationaryAntennaData)),this,SLOT(slotRtcmStationaryAntennaData(RtcmStationaryAntennaData)));
+    connect(&rtcm,SIGNAL(signalRtcmAntennaDescriptor(RtcmAntennaDescriptor)),this,SLOT(slotRtcmAntennaDescriptor(RtcmAntennaDescriptor)));
+    connect(&rtcm,SIGNAL(signalRtcmReceiverAntennaDescriptor(RtcmReceiverAntennaDescriptor)),this,SLOT(slotRtcmReceiverAntennaDescriptor(RtcmReceiverAntennaDescriptor)));
+
+    QString ip;
+    int port=12345;
+    foreach(const QHostAddress & address, QNetworkInterface::allAddresses())
+    {
+        if(address.protocol()==QAbstractSocket::IPv4Protocol && address!=QHostAddress(QHostAddress::LocalHost))
+        {
+            ip=address.toString();
+            break;
+        }
+    }
+    QLineEdit * serverip=new QLineEdit(QString("%1").arg(ip));
+    QLineEdit * serverport=new QLineEdit(QString("%1").arg(port));
+    serverip->setReadOnly(true);
+    serverport->setReadOnly(true);
+    ui->statusBar->addWidget(serverip);
+    ui->statusBar->addWidget(serverport);
+    interface=new QGMapInterface("NMEA Viewer", QHostAddress(ip),port,this);
+
+    polyline.id=0;
+    connect(interface,SIGNAL(signalClientIdConfirmed(QString)),this,SLOT(slotClientIdConfirmed(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -83,7 +109,7 @@ void MainWindow::on_requestrtk_clicked()
 void MainWindow::on_clear_clicked()
 {
     ui->rawshow->clear();
-    ui->hexshow->clear();
+    ui->rtcminfo->clear();
 }
 
 void MainWindow::on_loadports_clicked()
@@ -99,6 +125,8 @@ void MainWindow::on_startvenus8_clicked()
         int portid=ui->portlist->currentRow();
         if(portid>=0)
         {
+            polyline.vertices.clear();
+            interface->setPolyline(polyline,polylineconfig,"");
             venus8.startReceiveNmea(portid);
             ui->startvenus8->setText("Stop Venus8");
         }
@@ -155,12 +183,8 @@ void MainWindow::slotRtkReceived(QByteArray rtk)
 {
     QString content=QString("[%1]\n%2")
             .arg(QTime::currentTime().toString("HH:mm:ss:zzz"))
-            .arg(QString(rtk));
+            .arg(ui->hex->isChecked()?QString(rtk.toHex()):QString(rtk));
     ui->rawshow->append(content);
-    QString contenthex=QString("[%1]\n%2")
-            .arg(QTime::currentTime().toString("HH:mm:ss:zzz"))
-            .arg(QString(rtk.toHex()));
-    ui->hexshow->append(contenthex);
 }
 
 void MainWindow::slotRtkEnd()
@@ -242,6 +266,9 @@ void MainWindow::slotNmeaParsed(nmeaINFO info)
                 .arg(info.satinfo.sat[i].sig);
         ui->parsednmea->append(satinfo);
     }
+
+    polyline.vertices.push_back(QGMapPointF(convertNDEGToDegree(info.lat),convertNDEGToDegree(info.lon)));
+    interface->appendPolylineVertex(polyline.id,polyline.vertices.last(),"");
 }
 
 void MainWindow::slotVenus8Stopped()
@@ -277,6 +304,81 @@ void MainWindow::slotLogFilenameSet()
     ui->logfile->setText(logger.filename);
 }
 
+void MainWindow::slotRtcmGpsData(RtcmGPSData gpsData)
+{
+    QString content=QString("type:\t%1\n"
+                           "staid:\t%2\n"
+                           "tow:\t%3\n"
+                           "sync:\t%4\n"
+                           "nsat:\t%5\n"
+                           "sm:\t%6\n"
+                           "smint:\t%7\n"
+                           "satid:\t%8\n"
+                           "GPS1\n"
+                           "code1:\t%9\n"
+                           "pr1:\t%10\n"
+                           "ppr11:\t%11\n"
+                           "lock1:\t%12\n"
+                           "amb:\t%13\n"
+                           "cnr1:\t%14\n"
+                           "GPS2\n"
+                           "code2:\t%15\n"
+                           "pr21:\t%16\n"
+                           "ppr21:\t%17\n"
+                           "lock2:\t%18\n"
+                           "cnr2:\t%19\n")
+            .arg(gpsData.header.type).arg(gpsData.header.staid).arg(gpsData.header.tow).arg(gpsData.header.sync).arg(gpsData.header.nsat).arg(gpsData.header.sm).arg(int(gpsData.header.smint))
+            .arg(gpsData.message.satId)
+            .arg(int(gpsData.message.gpsl1.code1)).arg(gpsData.message.gpsl1.pr1).arg(gpsData.message.gpsl1.ppr11).arg(gpsData.message.gpsl1.lock1).arg(gpsData.message.gpsl1.amb).arg(gpsData.message.gpsl1.cnr1)
+            .arg(int(gpsData.message.gpsl2.code2)).arg(gpsData.message.gpsl2.pr21).arg(gpsData.message.gpsl2.ppr21).arg(gpsData.message.gpsl2.lock2).arg(gpsData.message.gpsl2.cnr2);
+    ui->rtcminfo->append(content);
+}
+
+void MainWindow::slotRtcmStationaryAntennaData(RtcmStationaryAntennaData stationaryAntennaData)
+{
+    QString content=QString("type:\t%1\n"
+                            "staid:\t%2\n"
+                            "itrf:\t%3\n"
+                            "ecefx:\t%4\n"
+                            "ecefy:\t%5\n"
+                            "ecefz:\t%6\n")
+            .arg(stationaryAntennaData.type).arg(stationaryAntennaData.staid).arg(stationaryAntennaData.itrf)
+            .arg(stationaryAntennaData.ecefx).arg(stationaryAntennaData.ecefy).arg(stationaryAntennaData.ecefz);
+    ui->rtcminfo->append(content);
+}
+
+void MainWindow::slotRtcmAntennaDescriptor(RtcmAntennaDescriptor antennaDescriptor)
+{
+    QString content=QString("type:\t%1\n"
+                            "staid:\t%2\n"
+                            "desc:\t%3\n"
+                            "antsetupid:\t%4\n")
+            .arg(antennaDescriptor.type).arg(antennaDescriptor.staid)
+            .arg(antennaDescriptor.desc).arg(antennaDescriptor.antsetupid);
+    ui->rtcminfo->append(content);
+}
+
+void MainWindow::slotRtcmReceiverAntennaDescriptor(RtcmReceiverAntennaDescriptor receiverAntennaDescriptor)
+{
+    QString content=QString("type:\t%1\n"
+                            "staid:\t%2\n"
+                            "desc:\t%3\n"
+                            "antsetupid:\t%4\n"
+                            "antserial:\t%5\n"
+                            "recvtype:\t%6\n"
+                            "recvfirmware:\t%7\n"
+                            "recvserial:\t%8\n")
+            .arg(receiverAntennaDescriptor.antdesc.type)
+            .arg(receiverAntennaDescriptor.antdesc.staid)
+            .arg(receiverAntennaDescriptor.antdesc.desc)
+            .arg(receiverAntennaDescriptor.antdesc.antsetupid)
+            .arg(receiverAntennaDescriptor.antserial)
+            .arg(receiverAntennaDescriptor.recvtype)
+            .arg(receiverAntennaDescriptor.recvfirmware)
+            .arg(receiverAntennaDescriptor.recvserial);
+    ui->rtcminfo->append(content);
+}
+
 void MainWindow::on_setlogfile_clicked()
 {
     logger.setLogFilename();
@@ -294,4 +396,9 @@ void MainWindow::on_startlog_clicked()
         ui->startlog->setText("Start");
         logger.stopLogNmea();
     }
+}
+
+void MainWindow::slotClientIdConfirmed(QString clientId)
+{
+    interface->setPolyline(polyline,polylineconfig,clientId);
 }
