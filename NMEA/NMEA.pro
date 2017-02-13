@@ -37,12 +37,15 @@ unix{
 
 win32{
     INCLUDEPATH += C:\SDK\Lib\Static\QGMapInterface
-    debug:LIBS += C:\SDK\Lib\Static\QGMapInterface\QGMapInterface_Debug.lib
-    release:LIBS += C:\SDK\Lib\Static\QGMapInterface\QGMapInterface_Release.lib
-
     INCLUDEPATH += C:\SDK\Lib\Static\QJSInterface
-    debug:LIBS += C:\SDK\Lib\Static\QJSInterface\QJSInterface_Debug.lib
-    release:LIBS += C:\SDK\Lib\Static\QJSInterface\QJSInterface_Release.lib
+
+    CONFIG(debug,debug|release){
+        LIBS += C:\SDK\Lib\Static\QGMapInterface\QGMapInterface_Debug.lib
+        LIBS += C:\SDK\Lib\Static\QJSInterface\QJSInterface_Debug.lib
+    }else{
+        LIBS += C:\SDK\Lib\Static\QGMapInterface\QGMapInterface_Release.lib
+        LIBS += C:\SDK\Lib\Static\QJSInterface\QJSInterface_Release.lib
+    }
 }
 
 RESOURCES += \

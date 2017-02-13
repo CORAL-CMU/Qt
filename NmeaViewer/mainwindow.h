@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <qgmapinterface.h>
 #include <nmea.h>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -26,8 +27,24 @@ protected:
     QGMapPolylineConfig polylineconfig;
     QVector<QGMapPolyline> polylines;
     QVector<QGMapPolylineConfig> polylineconfigs;
+
+    QTimer timer;
+    QGMapPolyline tmppolyline;
+    int playid;
+    int frameid;
+Q_SIGNALS:
+    void signalStartTimer(int msec);
+    void signalStopTimer();
+public Q_SLOTS:
+    void slotTimeout();
 private slots:
     void on_open_clicked();
+
+    void on_hide_clicked();
+
+    void on_show_clicked();
+
+    void on_play_clicked();
 
 protected slots:
     void slotClientIdConfirmed(QString clientId);

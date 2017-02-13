@@ -40,16 +40,16 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="color">
+         <widget class="QPushButton" name="hide">
           <property name="text">
-           <string>Set Color</string>
+           <string>Hide</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="hide">
+         <widget class="QPushButton" name="show">
           <property name="text">
-           <string>Hide/Show</string>
+           <string>Show</string>
           </property>
          </widget>
         </item>
@@ -58,10 +58,41 @@
       <item>
        <widget class="QListWidget" name="nmeas"/>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLineEdit" name="interval">
+          <property name="text">
+           <string>100</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="play">
+          <property name="text">
+           <string>Play</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
-    </item>
-    <item>
-     <widget class="QTableWidget" name="positions"/>
     </item>
    </layout>
   </widget>
