@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
             break;
         }
     }
+    ip=QString("128.237.203.30");
     QLineEdit * serverip=new QLineEdit(QString("%1:%2").arg(ip).arg(port));
     serverip->setReadOnly(true);
     ui->statusBar->addWidget(serverip);
@@ -44,10 +45,11 @@ void MainWindow::slotTimeout()
     if(frameid>=tmppolyline.vertices.size())
     {
         emit signalStopTimer();
+        interface->setPolyline(polylines[playid],polylineconfigs[playid],"");
     }
     else
     {
-        interface->appendPolylineVertex(tmppolyline.id,tmppolyline.vertices[frameid],"");
+        interface->appendPolylineVertex(polylines[playid].id,polylines[playid].vertices[frameid],"");
         frameid++;
         ui->progressBar->setValue(frameid);
     }
@@ -145,8 +147,9 @@ void MainWindow::on_play_clicked()
         tmppolyline=polylines[playid];
         ui->progressBar->setRange(0,tmppolyline.vertices.size());
         ui->progressBar->setValue(frameid);
-        polylines[playid].vertices.clear();
-        interface->setPolyline(polylines[playid],polylineconfigs[playid],"");
+        polylines[playid].vertices;
+        tmppolyline.vertices.clear();
+        interface->setPolyline(tmppolyline,polylineconfigs[playid],"");
         emit signalStartTimer(ui->interval->text().toInt());
     }
 }

@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QString ip;
-    int port=12345;
+    int port=22345;
     foreach(const QHostAddress & address, QNetworkInterface::allAddresses())
     {
         if(address.protocol()==QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost))
@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
             break;
         }
     }
+    ip=QString("128.237.203.30");
     QLabel * serverip=new QLabel(QString("Server IP Address & Port: %1:%2").arg(ip).arg(port));
     ui->statusBar->addWidget(serverip);
     interface=new QGMapInterface("RNDF Server",QHostAddress(ip),port,this);
@@ -99,7 +100,9 @@ void MainWindow::slotPositionUpdated(const QGeoPositionInfo &update)
         stream<<update.timestamp().toString("yyyy-MM-dd_HH:mm:ss:zzz")<<"\t"
              <<QString::number(update.coordinate().latitude(),'f',15)<<"\t"
              <<QString::number(update.coordinate().longitude(),'f',15)<<"\t"
-             <<QString::number(update.coordinate().altitude(),'f',15)<<"\n";
+             <<QString::number(update.coordinate().altitude(),'f',15)<<"\t"
+            <<QString::number(update.attribute(QGeoPositionInfo::HorizontalAccuracy),'f',15)<<"\t"
+             <<QString::number(update.attribute(QGeoPositionInfo::VerticalAccuracy),'f',15)<<"\n";
     }
 }
 
