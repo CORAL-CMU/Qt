@@ -1,12 +1,37 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QInputDialog>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     on_encode_clicked();
+
+    QList<QString> hostiplist;
+    foreach(const QHostAddress & address, QNetworkInterface::allAddresses())
+    {
+        if(address.protocol()==QAbstractSocket::IPv4Protocol && address!=QHostAddress(QHostAddress::LocalHost))
+        {
+            hostiplist.push_back(address.toString());
+        }
+    }
+    QString ip=QInputDialog::getItem(this,"Select Host IP Address","Host IP Address",hostiplist);
+    if(ip.isEmpty())
+    {
+        exit(0);
+    }
+    int port=QInputDialog::getInt(this,"Set Server Port","Port",12345,1025,65535);
+
+    QLineEdit * serverip=new QLineEdit(QString("%1").arg(ip));
+    QLineEdit * serverport=new QLineEdit(QString("%1").arg(port));
+    serverip->setReadOnly(true);
+    serverport->setReadOnly(true);
+    ui->statusBar->addWidget(serverip);
+    ui->statusBar->addWidget(serverport);
+    interface=new QGMapInterface("NMEA Viewer", QHostAddress(ip),port,this);
 
     connect(&ntrip,SIGNAL(signalCasterListLoaded()),this,SLOT(slotCasterListLoaded()));
     connect(&ntrip,SIGNAL(signalRtkReceived(QByteArray)),this,SLOT(slotRtkReceived(QByteArray)));
@@ -31,25 +56,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&rtcm,SIGNAL(signalRtcmAntennaDescriptor(RtcmAntennaDescriptor)),this,SLOT(slotRtcmAntennaDescriptor(RtcmAntennaDescriptor)));
     connect(&rtcm,SIGNAL(signalRtcmReceiverAntennaDescriptor(RtcmReceiverAntennaDescriptor)),this,SLOT(slotRtcmReceiverAntennaDescriptor(RtcmReceiverAntennaDescriptor)));
 
-    QString ip;
-    int port=12345;
-    foreach(const QHostAddress & address, QNetworkInterface::allAddresses())
-    {
-        if(address.protocol()==QAbstractSocket::IPv4Protocol && address!=QHostAddress(QHostAddress::LocalHost))
-        {
-            ip=address.toString();
-            break;
-        }
-    }
-    QLineEdit * serverip=new QLineEdit(QString("%1").arg(ip));
-    QLineEdit * serverport=new QLineEdit(QString("%1").arg(port));
-    serverip->setReadOnly(true);
-    serverport->setReadOnly(true);
-    ui->statusBar->addWidget(serverip);
-    ui->statusBar->addWidget(serverport);
-    interface=new QGMapInterface("NMEA Viewer", QHostAddress(ip),port,this);
-
-    polyline.id=0;
+    marker.id=0;
+    markerconfig.fillColor="red";
+    markerconfig.fillOpacity=0.7;
+    markerconfig.scale=3;
+    markerconfig.strokeColor="black";
+    markerconfig.strokeWeight=1;
     connect(interface,SIGNAL(signalClientIdConfirmed(QString)),this,SLOT(slotClientIdConfirmed(QString)));
 }
 
@@ -125,8 +137,6 @@ void MainWindow::on_startvenus8_clicked()
         int portid=ui->portlist->currentRow();
         if(portid>=0)
         {
-            polyline.vertices.clear();
-            interface->setPolyline(polyline,polylineconfig,"");
             venus8.startReceiveNmea(portid);
             ui->startvenus8->setText("Stop Venus8");
         }
@@ -267,8 +277,8 @@ void MainWindow::slotNmeaParsed(nmeaINFO info)
         ui->parsednmea->append(satinfo);
     }
 
-    polyline.vertices.push_back(QGMapPointF(convertNDEGToDegree(info.lat),convertNDEGToDegree(info.lon)));
-    interface->appendPolylineVertex(polyline.id,polyline.vertices.last(),"");
+    marker.position=QGMapPointF(convertNDEGToDegree(info.lat),convertNDEGToDegree(info.lon));
+    interface->setMarker(marker,markerconfig,"");
 }
 
 void MainWindow::slotVenus8Stopped()
@@ -400,5 +410,5 @@ void MainWindow::on_startlog_clicked()
 
 void MainWindow::slotClientIdConfirmed(QString clientId)
 {
-    interface->setPolyline(polyline,polylineconfig,clientId);
+    interface->setMarker(marker,markerconfig,clientId);
 }

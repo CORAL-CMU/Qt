@@ -42,8 +42,8 @@ private:
     Venus8Logger logger;
     Rtcm rtcm;
     QGMapInterface * interface;
-    QGMapPolyline polyline;
-    QGMapPolylineConfig polylineconfig;
+    QGMapMarker marker;
+    QGMapMarkerConfig markerconfig;
 public Q_SLOTS:
     void slotCasterListLoaded();
     void slotRtkReceived(QByteArray rtk);
