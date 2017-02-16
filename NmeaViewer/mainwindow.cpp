@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QFileDialog>
 #include <QColorDialog>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,27 +13,37 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString ip;
-    int port=12345;
+    QList<QString> hostiplist;
     foreach(const QHostAddress & address, QNetworkInterface::allAddresses())
     {
         if(address.protocol()==QAbstractSocket::IPv4Protocol && address!=QHostAddress(QHostAddress::LocalHost))
         {
-            ip=address.toString();
-            break;
+            hostiplist.push_back(address.toString());
         }
     }
-    ip=QString("128.237.203.30");
-    QLineEdit * serverip=new QLineEdit(QString("%1:%2").arg(ip).arg(port));
+    QString ip=QInputDialog::getItem(this,"Select Host IP Address","Host IP Address",hostiplist);
+    if(ip.isEmpty())
+    {
+        exit(0);
+    }
+    int port=QInputDialog::getInt(this,"Set Server Port","Port",12345,1025,65535);
+
+    QLineEdit * serverip=new QLineEdit(QString("%1").arg(ip));
+    QLineEdit * serverport=new QLineEdit(QString("%1").arg(port));
     serverip->setReadOnly(true);
+    serverport->setReadOnly(true);
     ui->statusBar->addWidget(serverip);
+    ui->statusBar->addWidget(serverport);
     interface=new QGMapInterface("NMEA Viewer", QHostAddress(ip),port,this);
 
     connect(interface,SIGNAL(signalClientIdConfirmed(QString)),this,SLOT(slotClientIdConfirmed(QString)));
 
-    connect(this,SIGNAL(signalStartTimer(int)),&timer,SLOT(start(int)));
-    connect(this,SIGNAL(signalStopTimer()),&timer,SLOT(stop()));
-    connect(&timer,SIGNAL(timeout()),this,SLOT(slotTimeout()));
+    marker.id=0;
+    markerconfig.fillColor="red";
+    markerconfig.fillOpacity=0.7;
+    markerconfig.scale=5;
+    markerconfig.strokeColor="black";
+    markerconfig.strokeWeight=1;
 }
 
 MainWindow::~MainWindow()
@@ -40,24 +51,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::slotTimeout()
-{
-    if(frameid>=tmppolyline.vertices.size())
-    {
-        emit signalStopTimer();
-        interface->setPolyline(polylines[playid],polylineconfigs[playid],"");
-    }
-    else
-    {
-        interface->appendPolylineVertex(polylines[playid].id,polylines[playid].vertices[frameid],"");
-        frameid++;
-        ui->progressBar->setValue(frameid);
-    }
-}
-
 void MainWindow::on_open_clicked()
 {
-    QString filename=QFileDialog::getOpenFileName(this,"Open NMEA File",QString(),QString("NMEA (*.nmea);;LatLng (*.txt)"));
+    QString filename=QFileDialog::getOpenFileName(this,"Open NMEA File",QString(),QString("NMEA (*.nmea)"));
     if(!filename.isEmpty())
     {
         QFile file(filename);
@@ -65,37 +61,42 @@ void MainWindow::on_open_clicked()
         {
             polyline.id=polylines.size();
             polyline.vertices.clear();
-            if(filename.endsWith("nmea"))
+
+            nmeaPARSER parser;
+            nmea_parser_init(&parser);
+            nmeaINFO info;
+            nmea_zero_INFO(&info);
+
+            QLineSeries * series = new QLineSeries();
+            while(!file.atEnd())
             {
-                nmeaPARSER parser;
-                nmea_parser_init(&parser);
-                nmeaINFO info;
-                nmea_zero_INFO(&info);
-                while(!file.atEnd())
+                QByteArray sentence=file.readLine();
+                sentence=sentence.trimmed();
+                sentence.append(QByteArray("\r\n"));
+                nmea_parse(&parser,sentence.data(),sentence.size(),&info);
+                if(!(info.lat==0&&info.lon==0))
                 {
-                    QByteArray sentence=file.readLine();
-                    nmea_parse(&parser,sentence.data(),sentence.size(),&info);
-                    if(!(info.lat==0&&info.lon==0))
+                    if(sentence.startsWith("$GPGGA"))
                     {
+                        series->append(polyline.vertices.size(),info.HDOP);
                         polyline.vertices.push_back(QGMapPointF(convertNDEGToDegree(info.lat),convertNDEGToDegree(info.lon)));
                     }
                 }
-
-                nmea_parser_destroy(&parser);
             }
-            else
-            {
-                while(!file.atEnd())
-                {
-                    QString data=file.readLine();
-                    QList<QString> tmpdata=data.split("\t",QString::SkipEmptyParts);
-                    if(tmpdata.size()>=3)
-                    {
-                        polyline.vertices.push_back(QGMapPointF(tmpdata[1].toDouble(),tmpdata[2].toDouble()));
-                    }
-                }
-            }
+            nmea_parser_destroy(&parser);
             file.close();
+
+            QChart *chart = new QChart();
+            chart->legend()->hide();
+            chart->addSeries(series);
+            chart->createDefaultAxes();
+            chart->setTitle("Simple line chart example");
+
+            HdopChartView *chartView = new HdopChartView(chart);
+            chartView->setRubberBand(QChartView::HorizontalRubberBand);
+            chartView->setRenderHint(QPainter::Antialiasing);
+            ui->tabWidget->addTab(chartView,QString::number(polylines.size()+1));
+            connect(chartView,SIGNAL(signalPreviewValue(QPointF)),this,SLOT(slotPreviewValue(QPointF)));
 
             QColor color=QColorDialog::getColor(Qt::blue,this,"Set Path Color");
             polylineconfig.strokeColor=color.name();
@@ -118,6 +119,17 @@ void MainWindow::slotClientIdConfirmed(QString clientId)
     interface->setPolyline(polylines,polylineconfigs,clientId);
 }
 
+void MainWindow::slotPreviewValue(QPointF value)
+{
+    ui->value->setText(QString("%1,%2").arg(value.x()).arg(value.y()));
+    int pointid=int(value.x()+0.5);
+    int dataid=ui->tabWidget->currentIndex();
+    if(pointid<0) pointid=0;
+    if(pointid>=polylines[dataid].vertices.size()) pointid=polylines[dataid].vertices.size()-1;
+    marker.position=polylines[dataid].vertices[pointid];
+    interface->setMarker(marker,markerconfig,"");
+}
+
 void MainWindow::on_hide_clicked()
 {
     int index=ui->nmeas->currentRow();
@@ -136,20 +148,30 @@ void MainWindow::on_show_clicked()
     }
 }
 
-void MainWindow::on_play_clicked()
+
+HdopChartView::HdopChartView(QWidget *parent)
+    : QChartView(parent)
 {
-    playid=ui->nmeas->currentRow();
-    if(playid>=0)
-    {
-        interface->setPolylineVisible(0,polylines.size(),false,"");
-        interface->setPolylineVisible(playid,1,true,"");
-        frameid=0;
-        tmppolyline=polylines[playid];
-        ui->progressBar->setRange(0,tmppolyline.vertices.size());
-        ui->progressBar->setValue(frameid);
-        polylines[playid].vertices;
-        tmppolyline.vertices.clear();
-        interface->setPolyline(tmppolyline,polylineconfigs[playid],"");
-        emit signalStartTimer(ui->interval->text().toInt());
-    }
+
 }
+
+HdopChartView::HdopChartView(QChart *chart, QWidget *parent)
+    : QChartView(chart,parent)
+{
+
+}
+
+void HdopChartView::mouseMoveEvent(QMouseEvent *event)
+{
+    QPointF value=chart()->mapToValue(event->pos());
+    emit signalPreviewValue(value);
+    QChartView::mouseMoveEvent(event);
+}
+
+void HdopChartView::mousePressEvent(QMouseEvent *event)
+{
+    QPointF value=chart()->mapToValue(event->pos());
+    emit signalSelectedValue(value);
+    QChartView::mousePressEvent(event);
+}
+

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network websockets webchannel webenginewidgets
+QT       += core charts gui network websockets webchannel webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
