@@ -81,7 +81,7 @@ void MainWindow::on_open_clicked()
                 {
                     if(sentence.startsWith("$GPGGA"))
                     {
-                        hdopseries->append(polyline.vertices.size(),info.HDOP);
+                        //hdopseries->append(polyline.vertices.size(),info.HDOP);
                         polyline.vertices.push_back(QGMapPointF(convertNDEGToDegree(info.lat),convertNDEGToDegree(info.lon)));
                     }
                     else if(sentence.startsWith("$GPGSA"))
