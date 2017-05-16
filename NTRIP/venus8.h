@@ -11,7 +11,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 
-#include <nmea.h>
+#include <nmea/nmea.h>
 
 class Venus8 : public QSerialPort
 {

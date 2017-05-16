@@ -42,6 +42,10 @@ CONFIG(debug,debug|release){
     win32:INCLUDEPATH += C:/SDK/Lib/Static/QJSInterface
     win32:LIBS += C:/SDK/Lib/Static/QGMapInterface/QGMapInterface_Debug.lib
     win32:LIBS += C:/SDK/Lib/Static/QJSInterface/QJSInterface_Debug.lib
+    unix:INCLUDEPATH += $$(HOME)/SDK/Lib/Static/QGMapInterface
+    unix:INCLUDEPATH += $$(HOME)/SDK/Lib/Static/QJSInterface
+    unix:LIBS += -L$$(HOME)/SDK/Lib/Static/QGMapInterface -lQGMapInterface_Debug
+    unix:LIBS += -L$$(HOME)/SDK/Lib/Static/QJSInterface -lQJSInterface_Debug
 }else{
     DESTDIR = ../build/$$TARGET/release
     MOC_DIR = ../build/$$TARGET/release
@@ -59,6 +63,10 @@ CONFIG(debug,debug|release){
     win32:INCLUDEPATH += C:/SDK/Lib/Static/QJSInterface
     win32:LIBS += C:/SDK/Lib/Static/QGMapInterface/QGMapInterface_Release.lib
     win32:LIBS += C:/SDK/Lib/Static/QJSInterface/QJSInterface_Release.lib
+    unix:INCLUDEPATH += $$(HOME)/SDK/Lib/Static/QGMapInterface
+    unix:INCLUDEPATH += $$(HOME)/SDK/Lib/Static/QJSInterface
+    unix:LIBS += -L$$(HOME)/SDK/Lib/Static/QGMapInterface -lQGMapInterface_Release
+    unix:LIBS += -L$$(HOME)/SDK/Lib/Static/QJSInterface -lQJSInterface_Release
 }
 
 
