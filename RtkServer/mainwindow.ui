@@ -38,6 +38,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="showrtk">
+        <property name="text">
+         <string>Show RTK</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>

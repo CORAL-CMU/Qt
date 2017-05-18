@@ -62,10 +62,13 @@ void MainWindow::on_triggerrtk_clicked()
 
 void MainWindow::slotRtkReceived(QByteArray rtk)
 {
-    QString content=QString("[%1]\n%2")
-            .arg(QTime::currentTime().toString("HH:mm:ss:zzz"))
-            .arg(QString(rtk));
-    ui->rtkview->append(content);
+    if(ui->showrtk->isChecked())
+    {
+        QString content=QString("[%1]\n%2")
+                .arg(QTime::currentTime().toString("HH:mm:ss:zzz"))
+                .arg(QString(rtk));
+        ui->rtkview->append(content);
+    }
     server->sendRtk(rtk);
 }
 
