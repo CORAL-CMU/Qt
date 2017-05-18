@@ -95,6 +95,7 @@ void Ntrip::slotLoadCasterList()
             while(this->canReadLine())
             {
                 QString rawdata=this->readLine();
+                qInfo(rawdata.toUtf8().data());
                 if(rawdata.startsWith("STR"))
                 {
                     QList<QString> data=rawdata.split(";");
