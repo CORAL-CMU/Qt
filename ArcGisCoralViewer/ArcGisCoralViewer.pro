@@ -25,7 +25,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-<<<<<<< HEAD
     trajectoryviewer.cpp \
     applanixviewer.cpp
 
@@ -36,11 +35,3 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 INCLUDEPATH += /usr/include/eigen3
-=======
-    trajectoryviewer.cpp
-
-HEADERS  += mainwindow.h \
-    trajectoryviewer.h
-
-FORMS    += mainwindow.ui
->>>>>>> 0d6c32c8cd9351cf28606b2fab27e92402148f9b
