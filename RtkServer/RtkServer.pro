@@ -30,9 +30,13 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
-INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/StaticLibs/QNtrip
+unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/StaticLibs/QNtrip
+win32:INCLUDEPATH += C:\SDK\CMU_LIBS\StaticLibs\QNtrip
+
 CONFIG(debug, debug|release){
-    LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QNtrip -lQNtrip_Debug
+    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QNtrip -lQNtrip_Debug
+    win32:LIBS += C:\SDK\CMU_LIBS\StaticLibs\QNtrip\QNtrip_Debug.lib
 }else{
-    LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QNtrip -lQNtrip_Release
+    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QNtrip -lQNtrip_Release
+    win32:LIBS += C:\SDK\CMU_LIBS\StaticLibs\QNtrip\QNtrip_Release.lib
 }

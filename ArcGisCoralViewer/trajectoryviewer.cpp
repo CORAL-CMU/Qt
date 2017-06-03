@@ -5,7 +5,10 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include <QInputDialog>
+<<<<<<< HEAD
 #include <QColorDialog>
+=======
+>>>>>>> 0d6c32c8cd9351cf28606b2fab27e92402148f9b
 #include <QFile>
 
 TrajectoryViewer::TrajectoryViewer(QWidget * parent)
@@ -55,9 +58,15 @@ void TrajectoryViewer::loadTrajectory(QString filename, int wkid)
                 {
                     Esri::ArcGISRuntime::Point point(v2, v1, Esri::ArcGISRuntime::SpatialReference(wkid));
                     Esri::ArcGISRuntime::Point point_proj = Esri::ArcGISRuntime::GeometryEngine::project(point, Esri::ArcGISRuntime::SpatialReference(4326));
+<<<<<<< HEAD
                     //qInfo("%f, %f -> %f, %f", point.x(), point.y(), point_proj.x(), point_proj.y());
                     int err = m_pc->addPoint(point_proj);
                     //qInfo("%d", err);
+=======
+                    qInfo("%f, %f -> %f, %f", point.x(), point.y(), point_proj.x(), point_proj.y());
+                    int err = m_pc->addPoint(point_proj);
+                    qInfo("%d", err);
+>>>>>>> 0d6c32c8cd9351cf28606b2fab27e92402148f9b
                 }
                 else
                 {
@@ -69,16 +78,26 @@ void TrajectoryViewer::loadTrajectory(QString filename, int wkid)
             }
         }
         file.close();
+<<<<<<< HEAD
         //qInfo("%d", m_pc->size());
+=======
+        qInfo("%d", m_pc->size());
+>>>>>>> 0d6c32c8cd9351cf28606b2fab27e92402148f9b
         m_mptbuilder->setPoints(m_pc);
         m_overlay->graphics()->clear();
         Esri::ArcGISRuntime::Multipoint mpoint(m_mptbuilder->toGeometry());
 
+<<<<<<< HEAD
         QColor trajcolor = QColorDialog::getColor(Qt::red, this, "Choose Trajectory Color", QColorDialog::ShowAlphaChannel|QColorDialog::DontUseNativeDialog);
 
         Esri::ArcGISRuntime::SimpleMarkerSymbol * symbol = new Esri::ArcGISRuntime::SimpleMarkerSymbol(Esri::ArcGISRuntime::SimpleMarkerSymbolStyle::Circle, trajcolor, 1);
 
         m_overlay->graphics()->append(new Esri::ArcGISRuntime::Graphic(mpoint, symbol, this));  
+=======
+        Esri::ArcGISRuntime::SimpleMarkerSymbol * symbol = new Esri::ArcGISRuntime::SimpleMarkerSymbol(Esri::ArcGISRuntime::SimpleMarkerSymbolStyle::Circle, QColor(Qt::red), 1);
+
+        m_overlay->graphics()->append(new Esri::ArcGISRuntime::Graphic(mpoint, symbol, this));
+>>>>>>> 0d6c32c8cd9351cf28606b2fab27e92402148f9b
     }
 }
 
