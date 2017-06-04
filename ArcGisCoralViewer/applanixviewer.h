@@ -34,11 +34,15 @@ protected:
     QVector<Esri::ArcGISRuntime::MultipointBuilder *> m_mptbuilder;
 protected:
     QVector<QDateTime> timestamps;
+
     QVector<Eigen::Vector3d> positions;
     QVector<Eigen::Quaterniond> orientations;
-    QVector<Eigen::Vector3d> linearvelocities;
-    QVector<Eigen::Vector3d> angularvelocities;
+
     QVector<Eigen::Vector3d> accelerations;
+    QVector<Eigen::Vector3d> linearvelocities;
+
+    QVector<Eigen::Vector3d> angularvelocities;
+
     QVector<double> speeds;
 };
 

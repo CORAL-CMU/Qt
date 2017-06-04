@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT += positioning core gui opengl xml network widgets sensors
+QT += positioning core gui opengl xml network widgets sensors qml quick quickwidgets
 
-CONFIG += c++11 esri_runtime_qt100_0_0
+CONFIG += c++11 arcgis_runtime_qml_cpp100_0_0
 
 TARGET = ArcGisCoralViewer
 TEMPLATE = app
@@ -35,3 +35,6 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 INCLUDEPATH += /usr/include/eigen3
+
+RESOURCES += \
+    arcgiscoralviewer.qrc

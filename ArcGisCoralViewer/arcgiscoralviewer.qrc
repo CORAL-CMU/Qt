@@ -1,0 +1,5 @@
+<RCC>
+    <qresource lang="QML" prefix="/UI">
+        <file>ApplanixViewer.qml</file>
+    </qresource>
+</RCC>

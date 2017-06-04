@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QQuickWidget>
 
 #include "trajectoryviewer.h"
 
@@ -22,6 +23,7 @@ private:
 
 protected:
     TrajectoryViewer * m_trajviewer;
+    QQuickWidget * m_applanixviewer;
 };
 
 #endif // MAINWINDOW_H
