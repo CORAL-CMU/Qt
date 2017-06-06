@@ -25,7 +25,7 @@ Item{
                 Layout.minimumHeight: 400
                 Layout.fillHeight: true
 
-                Map{
+                Map{                    
                     BasemapImageryWithLabelsVector{}
                     initialViewpoint: viewPoint
                 }
@@ -45,20 +45,52 @@ Item{
                 title: "Position"
                 TableView{
                     TableViewColumn{
+                        width: 0.25*parent.width
                         role: "timestamp"
                         title: "TimeStamp (s)"
+                        delegate: Rectangle{
+                            anchors.fill: parent
+                            border.color: "black"
+                            Text{
+                                text: model.timestamp
+                            }
+                        }
                     }
                     TableViewColumn{
+                        width: 0.25*parent.width
                         role: "pose_x"
                         title: "pose.x (m)"
+                        delegate: Rectangle{
+                            anchors.fill: parent
+                            border.color: "black"
+                            Text{
+                                text: model.pose_x
+                            }
+                        }
                     }
                     TableViewColumn{
+                        width: 0.25*parent.width
                         role: "pose_y"
                         title: "pose.y (m)"
+                        delegate: Rectangle{
+                            anchors.fill: parent
+                            border.color: "black"
+                            Text{
+                                text: model.pose_y
+                            }
+                        }
                     }
                     TableViewColumn{
+                        width: 0.25*parent.width
                         role: "pose_z"
                         title: "pose.z (m)"
+                        delegate: Rectangle{
+                            anchors.fill: parent
+                            border.color: "black"
+                            Text{
+                                text: model.pose_z
+                            }
+                        }
                     }
                     model: positiondata
                 }
@@ -76,15 +108,5 @@ Item{
             }
         }
         targetScale: 15000
-    }
-
-    ListModel{
-        id: positiondata
-        ListElement{
-            timestamp: 1494374906.56721
-            pose_x: 4477753.45187315
-            pose_y: 588765.528685924
-            pose_z: -246.2187476945
-        }
     }
 }
