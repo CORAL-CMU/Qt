@@ -2,6 +2,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 
 TableView{
+    anchors.fill: parent
     model: applanixdata
     TableViewColumn{
         role: "timestamp"
@@ -15,7 +16,7 @@ TableView{
         }
     }
     TableViewColumn{
-        role: "posex"
+        role: "p"
         title: "pose.x"
         delegate: Rectangle{
             anchors.fill: parent
@@ -54,30 +55,31 @@ TableView{
             anchors.fill: parent
             border.color: "lightgrey"
             Text{
-                text: model.modelData.posex
+                text: model.modelData.rot1
             }
         }
     }
     TableViewColumn{
-        role: "posey"
-        title: "pose.y"
+        role: "rot2"
+        title: "pose.rot2"
         delegate: Rectangle{
             anchors.fill: parent
             border.color: "lightgrey"
             Text{
-                text: model.modelData.posey
+                text: model.modelData.rot2
             }
         }
     }
     TableViewColumn{
-        role: "posez"
-        title: "pose.z"
+        role: "rot3"
+        title: "pose.rot3"
         delegate: Rectangle{
             anchors.fill: parent
             border.color: "lightgrey"
             Text{
-                text: model.modelData.posez
+                text: model.modelData.rot3
             }
         }
     }
+
 }

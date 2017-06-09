@@ -1,0 +1,5 @@
+<RCC>
+    <qresource lang="QML" prefix="/">
+        <file>CoralDataViewer.qml</file>
+    </qresource>
+</RCC>
