@@ -38,14 +38,14 @@ CONFIG(debug,debug|release){
     unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/3rdLibs/NmeaLib
     unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/3rdLibs/NmeaLib -lNmeaLib_Debug
 
-    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/StaticLibs/QGMapInterface
-    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/StaticLibs/QJSInterface
-    win32:LIBS += C:/SDK/CMU_LIBS/StaticLibs/QGMapInterface/QGMapInterface_Debug.lib
-    win32:LIBS += C:/SDK/CMU_LIBS/StaticLibs/QJSInterface/QJSInterface_Debug.lib
-    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/StaticLibs/QGMapInterface
-    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/StaticLibs/QJSInterface
-    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QGMapInterface -lQGMapInterface_Debug
-    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QJSInterface -lQJSInterface_Debug
+    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/QStaticLibs/QGMapInterface
+    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/QStaticLibs/QJSInterface
+    win32:LIBS += C:/SDK/CMU_LIBS/QStaticLibs/QGMapInterface/QGMapInterface_Debug.lib
+    win32:LIBS += C:/SDK/CMU_LIBS/QStaticLibs/QJSInterface/QJSInterface_Debug.lib
+    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/QStaticLibs/QGMapInterface
+    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/QStaticLibs/QJSInterface
+    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/QStaticLibs/QGMapInterface -lQGMapInterface_Debug
+    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/QStaticLibs/QJSInterface -lQJSInterface_Debug
 }else{
     DESTDIR = ../build/$$TARGET/release
     MOC_DIR = ../build/$$TARGET/release
@@ -59,14 +59,14 @@ CONFIG(debug,debug|release){
     unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/3rdLibs/NmeaLib
     unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/3rdLibs/NmeaLib -lNmeaLib_Release
 
-    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/StaticLibs/QGMapInterface
-    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/StaticLibs/QJSInterface
-    win32:LIBS += C:/SDK/CMU_LIBS/StaticLibs/QGMapInterface/QGMapInterface_Release.lib
-    win32:LIBS += C:/SDK/CMU_LIBS/StaticLibs/QJSInterface/QJSInterface_Release.lib
-    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/StaticLibs/QGMapInterface
-    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/StaticLibs/QJSInterface
-    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QGMapInterface -lQGMapInterface_Release
-    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/StaticLibs/QJSInterface -lQJSInterface_Release
+    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/QStaticLibs/QGMapInterface
+    win32:INCLUDEPATH += C:/SDK/CMU_LIBS/QStaticLibs/QJSInterface
+    win32:LIBS += C:/SDK/CMU_LIBS/QStaticLibs/QGMapInterface/QGMapInterface_Release.lib
+    win32:LIBS += C:/SDK/CMU_LIBS/QStaticLibs/QJSInterface/QJSInterface_Release.lib
+    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/QStaticLibs/QGMapInterface
+    unix:INCLUDEPATH += $$(HOME)/SDK/CMU_LIBS/QStaticLibs/QJSInterface
+    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/QStaticLibs/QGMapInterface -lQGMapInterface_Release
+    unix:LIBS += -L$$(HOME)/SDK/CMU_LIBS/QStaticLibs/QJSInterface -lQJSInterface_Release
 }
 
 
